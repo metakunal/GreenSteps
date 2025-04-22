@@ -8,7 +8,10 @@ require('dotenv').config();
 const app = express();
 // Allow requests from your frontend origin
 app.use(cors({
-  origin: 'http://localhost:5173' // Your frontend URL
+  origin: [
+    'http://localhost:5173', 
+    'https://green-steps-xjtv.vercel.app'
+  ]
 }));
 app.use(express.json());
 
