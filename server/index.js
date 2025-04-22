@@ -12,7 +12,7 @@ app.use(cors({
     'http://localhost:5173', 
     'https://green-steps-xjtv.vercel.app'
   ]
-}));
+})); 
 app.use(express.json());
 
 // Updated MongoDB connection using Promises

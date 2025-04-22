@@ -17,7 +17,6 @@ export default function Signup({ setToken }) {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 text-gray-900">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex flex-col items-center mb-6">
-          <div className="w-10 h-10 bg-gray-300 rounded-full mb-2" />
           <h2 className="text-2xl font-semibold">Sign up</h2>
         </div>
 
