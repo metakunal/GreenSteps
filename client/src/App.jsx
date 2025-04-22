@@ -4,13 +4,14 @@ import HabitLogger from './components/HabitLogger';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import LandingPage from './components/LandingPage';
 import { Toaster } from 'react-hot-toast';
 import { jwtDecode } from 'jwt-decode';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -29,9 +30,11 @@ export default function App() {
     return (
       <main className="p-4">
         <Toaster />
-        <h1 className="text-3xl font-bold mb-4">GreenSteps 🌱</h1>
-        <Signup setToken={setToken} />
-        <Login setToken={setToken} />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/signup" element={<Signup setToken={setToken} />} />
+        </Routes>
       </main>
     );
   }
@@ -39,7 +42,7 @@ export default function App() {
   return (
     <main className="p-4">
       <Toaster />
-      <h1 className="text-3xl font-bold">GreenSteps 🌱</h1>
+      <h1 className="text-3xl font-bold mb-4">GreenSteps 🌱</h1>
       <div className="flex justify-between items-center mb-4">
         <p className="text-gray-700">Hi, {email}</p>
         <button onClick={handleLogout} className="bg-red-600 text-white px-3 py-1 rounded">Sign Out</button>
