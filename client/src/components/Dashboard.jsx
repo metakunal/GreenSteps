@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar
-} from 'recharts';
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar
+  } from 'recharts';
+  
 
 export default function Dashboard() {
   const [logs, setLogs] = useState([]);
   const [global, setGlobal] = useState(null);
+  const [weekSummary, setWeekSummary] = useState(0);
+  const [monthSummary, setMonthSummary] = useState(0);
+  const [badges, setBadges] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/habits/me', {
-      headers: { Authorization: localStorage.getItem('token') }
-    }).then(res => {
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:5000/api/habits/me', { headers: { Authorization: token } }).then(res => {
         // Make sure logs is always an array
         setLogs(Array.isArray(res.data) ? res.data : []);
       })
@@ -19,8 +23,11 @@ export default function Dashboard() {
         console.error("Error fetching user data:", err);
         setLogs([]);
       });
-
     axios.get('http://localhost:5000/api/habits/global').then(res => setGlobal(res.data));
+    axios.get('http://localhost:5000/api/habits/summary/week', { headers: { Authorization: token } }).then(res => setWeekSummary(res.data.points));
+    axios.get('http://localhost:5000/api/habits/summary/month', { headers: { Authorization: token } }).then(res => setMonthSummary(res.data.points));
+    axios.get('http://localhost:5000/api/habits/badges', { headers: { Authorization: token } }).then(res => setBadges(res.data.badges));
+    axios.get('http://localhost:5000/api/habits/leaderboard').then(res => setLeaderboard(res.data));
   }, []);
 
   const total = logs.reduce((sum, l) => sum + l.actions.reduce((s, a) => s + a.points, 0), 0);
@@ -64,6 +71,8 @@ export default function Dashboard() {
     <div className="my-4">
       <h2 className="text-xl font-semibold">Your Stats</h2>
       <p>Total Eco-Points: {total}</p>
+      <p>Points this Week: {weekSummary}</p>
+      <p>Points this Month: {monthSummary}</p>
       <p>Current Streak: {streak} {streak === 1 ? 'day' : 'days'}</p>
 
       <h3 className="text-lg font-semibold mt-4">Weekly Points</h3>
@@ -84,8 +93,24 @@ export default function Dashboard() {
         <Bar dataKey="count" fill="#3b82f6" />
       </BarChart>
 
+      <h2 className="text-xl font-semibold mt-4">Badges</h2>
+      <div className="flex flex-wrap gap-2">
+        {badges.map(b => (
+          <span key={b} className="bg-green-200 px-3 py-1 rounded-full">{b}</span>
+        ))}
+      </div>
+
       <h2 className="text-xl font-semibold mt-4">Global Stats</h2>
       <p>Total Eco-Points (All Users): {global?.totalPoints}</p>
+
+      <h2 className="text-xl font-semibold mt-4">Leaderboard</h2>
+      <ol className="list-decimal list-inside">
+        {leaderboard.map((entry, idx) => (
+          <li key={idx}>
+            User {entry.user}: {entry.points} points
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

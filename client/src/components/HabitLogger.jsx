@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+
 const habits = ['Carpooling', 'Reused Container', 'Skipped Meat', 'Used Public Transport', 'No-Plastic Day', 'Others'];
+const quotes = [
+  "Small steps make a big difference 🌍",
+  "You're helping the planet today 💚",
+  "Consistency > Perfection. Keep it up!",
+  "One habit at a time. One Earth to save.",
+];
 
 export default function HabitLogger() {
   const [checked, setChecked] = useState({});
@@ -9,9 +17,14 @@ export default function HabitLogger() {
   const handleSubmit = async () => {
     const actions = habits.filter(h => checked[h]).map(h => ({ habit: h, note }));
     const today = new Date().toISOString().split('T')[0];
-    await axios.post('http://localhost:5000/api/habits/log', { date: today, actions }, {
-      headers: { Authorization: localStorage.getItem('token') }
-    });
+    try {
+      await axios.post('http://localhost:5000/api/habits/log', { date: today, actions }, {
+        headers: { Authorization: localStorage.getItem('token') }
+      });
+      toast.success(quotes[Math.floor(Math.random() * quotes.length)]);
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Error logging habits');
+    }
   };
 
   return (
