@@ -7,7 +7,7 @@ export default function Login({ setToken }) {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    const res = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/login`, { email, password });
     localStorage.setItem('token', res.data.token);
     setToken(res.data.token);
   };

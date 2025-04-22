@@ -18,7 +18,7 @@ export default function HabitLogger() {
     const actions = habits.filter(h => checked[h]).map(h => ({ habit: h, note }));
     const today = new Date().toISOString().split('T')[0];
     try {
-      await axios.post('http://localhost:5000/api/habits/log', { date: today, actions }, {
+      await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/habits/log`, { date: today, actions }, {
         headers: { Authorization: localStorage.getItem('token') }
       });
       toast.success(quotes[Math.floor(Math.random() * quotes.length)]);

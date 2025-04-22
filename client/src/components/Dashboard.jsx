@@ -15,7 +15,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get('http://localhost:5000/api/habits/me', { headers: { Authorization: token } }).then(res => {
+    axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/habits/me`, { headers: { Authorization: token } }).then(res => {
         // Make sure logs is always an array
         setLogs(Array.isArray(res.data) ? res.data : []);
       })
@@ -23,11 +23,11 @@ export default function Dashboard() {
         console.error("Error fetching user data:", err);
         setLogs([]);
       });
-    axios.get('http://localhost:5000/api/habits/global').then(res => setGlobal(res.data));
-    axios.get('http://localhost:5000/api/habits/summary/week', { headers: { Authorization: token } }).then(res => setWeekSummary(res.data.points));
-    axios.get('http://localhost:5000/api/habits/summary/month', { headers: { Authorization: token } }).then(res => setMonthSummary(res.data.points));
-    axios.get('http://localhost:5000/api/habits/badges', { headers: { Authorization: token } }).then(res => setBadges(res.data.badges));
-    axios.get('http://localhost:5000/api/habits/leaderboard').then(res => setLeaderboard(res.data));
+    axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/habits/global`).then(res => setGlobal(res.data));
+    axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/habits/summary/week`, { headers: { Authorization: token } }).then(res => setWeekSummary(res.data.points));
+    axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/habits/summary/month`, { headers: { Authorization: token } }).then(res => setMonthSummary(res.data.points));
+    axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/habits/badges`, { headers: { Authorization: token } }).then(res => setBadges(res.data.badges));
+    axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/habits/leaderboard`).then(res => setLeaderboard(res.data));
   }, []);
 
   const total = logs.reduce((sum, l) => sum + l.actions.reduce((s, a) => s + a.points, 0), 0);
