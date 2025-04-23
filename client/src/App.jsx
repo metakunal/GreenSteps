@@ -12,7 +12,33 @@ export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
-
+  const [anonymousName, setAnonymousName] = useState('');
+  useEffect(() => {
+    // Function to generate anonymous name using Web Crypto API
+    const generateAnonymousName = async (email) => {
+      if (!email) return '';
+      
+      // Convert email string to array buffer
+      const encoder = new TextEncoder();
+      const data = encoder.encode(email);
+      
+      // Generate SHA-256 hash
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      
+      // Convert to hex string
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      // Return first 6 characters
+      return hashHex.slice(0, 6);
+    };
+    
+    // Call the function and update state
+    generateAnonymousName(email).then(name => {
+      setAnonymousName(name);
+    });
+  }, [email]);
+  
   useEffect(() => {
     if (token) {
       const decoded = jwtDecode(token);
@@ -50,7 +76,7 @@ export default function App() {
             </div>
             
             <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4">
-              <p className="text-gray-600 font-medium">Welcome, <span className="text-green-700">{email}</span></p>
+              <p className="text-gray-600 font-medium">Welcome, <span className="text-green-700">{anonymousName}</span></p>
               <nav className="flex space-x-4">
                 <Link 
                   to="/log" 

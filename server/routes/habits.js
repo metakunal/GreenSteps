@@ -27,8 +27,8 @@ function auth(req, res, next) {
 
 router.post('/log', auth, async (req, res) => {
   const { date, actions } = req.body;
-  // const existing = await HabitLog.findOne({ userId: req.user.id, date });
-  // if (existing) return res.status(400).json({ error: 'Already submitted for today' });
+  const existing = await HabitLog.findOne({ userId: req.user.id, date });
+  if (existing) return res.status(400).json({ error: 'Already submitted for today' });
 
   const actionLogs = actions.map(a => ({
     habit: a.habit,
